@@ -22,7 +22,8 @@ This project aims to enhance the selection process of LLMs, ultimately improving
 
 ### Prerequisites
 
-TODO: List what a user needs to have installed before running the installation instructions below
+Python 3.9 or higher
+PiP
 
 ### Add-ons
 
@@ -30,9 +31,11 @@ TODO: List which add-ons are included in the project, and the purpose each add-o
 
 ### Installation Steps
 
-TODO: Describe the installation process.
-Instructions need to be such that a user can just copy/paste the commands to get things set up and running. 
+Open a terminal in the root directory (containing LLMEval.py).
 
+Run the following command: ``` pip install -e . ``` (the -e makes this an editable package, omit if you do not plan to edit the source files)
+
+The program can now be run from any terminal using the following syntax ``` python -m LLMEval [-h] --api_key API_KEY [--model MODEL] [--prompt PROMPT] ```
 
 ## Functionality
 
