@@ -25,10 +25,6 @@ This project aims to enhance the selection process of LLMs, ultimately improving
 Python 3.9 or higher
 PiP
 
-### Add-ons
-
-TODO: List which add-ons are included in the project, and the purpose each add-on serves in your app.
-
 ### Installation Steps
 
 Open a terminal in the root directory (containing LLMEval.py).
@@ -39,25 +35,21 @@ The program can now be run from any terminal using the following syntax ``` pyth
 
 ## Functionality
 
-TODO: Write usage instructions. Structuring it as a walkthrough can help structure this section,
-and showcase your features.
+As it stands, the only functionality is the command line interface which allows the user to select a LLM to test against. 
 
+In the near future once you have selected a model a series of tests will be kicked off and a model performance output will be generated.
 
 ## Known Problems
 
-TODO: Describe any known issues, bugs, odd behaviors or code smells. 
-Provide steps to reproduce the problem and/or name a file or a function where the problem lives.
-
+None so far.
 
 ## Contributing
 
-TODO: Leave the steps below if you want others to contribute to your project.
-
-1. Fork it!
+1. Fork the project
 2. Create your feature branch: `git checkout -b my-new-feature`
 3. Commit your changes: `git commit -am 'Add some feature'`
 4. Push to the branch: `git push origin my-new-feature`
-5. Submit a pull request :D
+5. Submit a pull request
 
 ## Additional Documentation
 
