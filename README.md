@@ -22,39 +22,34 @@ This project aims to enhance the selection process of LLMs, ultimately improving
 
 ### Prerequisites
 
-TODO: List what a user needs to have installed before running the installation instructions below
-
-### Add-ons
-
-TODO: List which add-ons are included in the project, and the purpose each add-on serves in your app.
+Python 3.9 or higher
+PiP
 
 ### Installation Steps
 
-TODO: Describe the installation process.
-Instructions need to be such that a user can just copy/paste the commands to get things set up and running. 
+Open a terminal in the root directory (containing LLMEval.py).
 
+Run the following command: ``` pip install -e . ``` (the -e makes this an editable package, omit if you do not plan to edit the source files)
+
+The program can now be run from any terminal using the following syntax ``` python -m LLMEval [-h] --api_key API_KEY [--model MODEL] [--prompt PROMPT] ```
 
 ## Functionality
 
-TODO: Write usage instructions. Structuring it as a walkthrough can help structure this section,
-and showcase your features.
+As it stands, the only functionality is the command line interface which allows the user to select a LLM to test against. 
 
+In the near future once you have selected a model a series of tests will be kicked off and a model performance output will be generated.
 
 ## Known Problems
 
-TODO: Describe any known issues, bugs, odd behaviors or code smells. 
-Provide steps to reproduce the problem and/or name a file or a function where the problem lives.
-
+None so far.
 
 ## Contributing
 
-TODO: Leave the steps below if you want others to contribute to your project.
-
-1. Fork it!
+1. Fork the project
 2. Create your feature branch: `git checkout -b my-new-feature`
 3. Commit your changes: `git commit -am 'Add some feature'`
 4. Push to the branch: `git push origin my-new-feature`
-5. Submit a pull request :D
+5. Submit a pull request
 
 ## Additional Documentation
 
