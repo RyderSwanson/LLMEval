@@ -91,6 +91,17 @@ if __name__ == "__main__":
     parser.add_argument('--api_key', type=str, help='API Key', required=True)
     parser.add_argument('--model', type=str, default=models.getRandomFreeModelID(), help='Model')
     parser.add_argument('--prompt', type=str, default="What is the meaning of life?", help='Prompt')
+    parser.add_argument('--temperature', type=float, default=1.0, help='Temperature')
+    parser.add_argument('--top_p', type=float, default=1.0, help='Top p')
+    parser.add_argument('--top_k', type=int, default=0, help='Top k')
+    parser.add_argument('--frequency_penalty', type=float, default=0.0, help='Frequency penalty')
+    parser.add_argument('--presence_penalty', type=float, default=0.0, help='Presence penalty')
+    parser.add_argument('--repetition_penalty', type=float, default=1.0, help='Repetition penalty')
+    parser.add_argument('--min_p', type=float, default=0.0, help='Min p')
+    parser.add_argument('--top_a', type=float, default=0.0, help='Top a')
+    parser.add_argument('--seed', type=int, help='Seed')
+    parser.add_argument('--max_tokens', type=int, help='Max tokens')
+
     args = parser.parse_args()
 
     llm = LLMEval(api_key=args.api_key)
