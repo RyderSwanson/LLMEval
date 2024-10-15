@@ -10,7 +10,10 @@ class TestLLMEval(unittest.TestCase):
 
     def test_getResponse(self):
         response = self.llm.getResponse(prompt="Respond with \"Hello, World!\"")
-        print(response['choices'][0]['message']['content'])
+        try:
+            print(response['choices'][0]['message']['content'])
+        except KeyError:
+            print(response)
         self.assertIn( "Hello, World!", response['choices'][0]['message']['content'])
 
 if __name__ == '__main__':
