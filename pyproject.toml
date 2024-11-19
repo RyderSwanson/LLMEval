@@ -5,17 +5,15 @@ description = "A tool for evaluating the performance of LLMs"
 authors = ["temp"]
 
 [tool.poetry.dependencies]
-python = "^3.9"
-nltk
-abc
-torch
-jiwer
-transformers
-bert_score
-lexical_diversity
-gensim
-rouge_score
-multiprocessing
+python = "*"
+nltk = "*"
+torch = "*"
+jiwer = "*"
+transformers = "*"
+bert-score = "*"
+lexical_diversity = "*"
+gensim = "*"
+rouge_score = "*"
 
 [build-system]
 requires = ["poetry-core"]
