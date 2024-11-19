@@ -1,15 +1,22 @@
+import os
+os.environ['TF_ENABLE_ONEDNN_OPTS'] = '0'
+
+
 from abc import ABC, abstractmethod
 from nltk.translate.bleu_score import sentence_bleu
 from nltk.translate.meteor_score import meteor_score
 import torch
-import evaluatorDependencies.chrF as characterLevelScore
+# import evaluatorDependencies.chrF as characterLevelScore
 import jiwer
 from transformers import BertTokenizer, BertModel
 from bert_score import BERTScorer
 from nltk.corpus import stopwords
 from nltk import download
+import lexical_diversity as ld
 from gensim.models import Word2Vec, KeyedVectors
+from rouge_score import rouge_scorer
 # import evaluatorDependencies.factscorer as FS
+
 
 """
     The Abstract EvaluationHandler Class which takes the prompt, response, and returns the evaluation metric class
@@ -24,16 +31,15 @@ class EvaluationMethodFactory:
     def create_evaluation(dataType, data):
         if dataType == "bleu":
             return bleuEvaluator(data)
-        elif dataType == "perp":
-            return perpEvaluator(data)
+        # elif dataType == "perp":
+        #     return perpEvaluator(data)
+        elif dataType == "meteor":
+            return meteorEvaluator(data)
         elif dataType == "rouge":
             return rougeEvaluator(data)
         else:
-            raise ValueError("Unsupported data type for evaluation")
-
-def printHelloWorld():
-
-    print("HelloWorld")
+            print("Only Testing the most basic evaluators currently not: " + str(dataType))
+            # raise ValueError("Unsupported data type for evaluation")
 
 class Evaluator(ABC):
     @abstractmethod
@@ -42,19 +48,20 @@ class Evaluator(ABC):
 
 def getEvaluators():
     return [
-        "perp",
+        # "perp",
         "bleu",
         "rouge",
-        "meteor",
-        "chrf",
-        "wer",
-        "editDistance",
-        "bert",
-        "wordMover",
-        "ttr",
-        "mtld",
-        "hdd"
+        "meteor"
+        # "chrf",
+        # "wer",
+        # "editDistance",
+        # "bert",
+        # "wordMover",
+        # "ttr",
+        # "mtld",
+        # "hdd",
         # "factScorer"
+
     ]
 
 """
@@ -147,8 +154,8 @@ class rougeEvaluator(Evaluator):
     
     def PerformEvaluation(self):
 
-        rouge_score = evaluate.load("rouge")
-        return rouge_score.compute(predictions=self.data[1], references=self.data[0], use_stemmer=True)
+        rouge_score = rouge_scorer.RougeScorer(['rouge2'], use_stemmer=True).load("rouge")
+        return rouge_score.score(predictions=self.data[1], references=self.data[0])
 
 """
     Data will be in the format: [Base truth string, LLM Output String]
@@ -174,7 +181,8 @@ class chrFEvaluator(Evaluator):
     
     def PerformEvaluation(self):
 
-        return characterLevelScore.chrF(self.data[1], self.data[2])
+        print("TODO: Fixing")
+        # return characterLevelScore.chrF(self.data[1], self.data[2])
 
 """
     Data will be in the format: [Base truth string, LLM Output String]
@@ -276,16 +284,17 @@ class wordMoverEvaluator(Evaluator):
 #     The fact scorer method is unique as it is brand new and uses a model trained on wikipedia for accuracy requires this model to be self contained
 #     Data will be in the formate [topic, LLM output string, llmAPIKey]
 # """
-# class factScorerEvaluator(Evaluator):
+class factScorerEvaluator(Evaluator):
 
-#     def __init__(self, data):
+    def __init__(self, data):
 
-#         self.data = list([data[0]]), list([data[1]], data[2])
+        self.data = list([data[0]]), list([data[1]], data[2])
     
-#     def PerformEvaluation(self):
+    def PerformEvaluation(self):
 
-#         fs = FS.FactScorer(openai_key = self.data[2])
-#         return fs.get_score(self.data[0], self.data[1], gamma=1)["score"]
+        print("TODO: Fixing")
+        # fs = FS.FactScorer(openai_key = self.data[2])
+        # return fs.get_score(self.data[0], self.data[1], gamma=1)["score"]
 """
     Data will be in the format: [List Of Strings]
 """

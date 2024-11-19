@@ -45,6 +45,7 @@ class LLMEval:
         
         """
 
+        print("Sending Getter")
         response = requests.post(
             url="https://openrouter.ai/api/v1/chat/completions",
             headers={
@@ -72,6 +73,11 @@ class LLMEval:
                 "max_tokens": max_tokens
             })
         )
+
+        print("Got Response")
+        if str(response.json()['code']) == "401":
+            print("Invalid Key")
+        input()
 
         id = response.json()['id']
         print(f"https://openrouter.ai/api/v1/generation?id={id}")
