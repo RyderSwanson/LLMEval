@@ -6,6 +6,16 @@ authors = ["temp"]
 
 [tool.poetry.dependencies]
 python = "^3.9"
+nltk
+abc
+torch
+jiwer
+transformers
+bert_score
+lexical_diversity
+gensim
+rouge_score
+multiprocessing
 
 [build-system]
 requires = ["poetry-core"]
