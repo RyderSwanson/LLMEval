@@ -12,11 +12,13 @@ from transformers import BertTokenizer, BertModel
 from bert_score import BERTScorer
 from nltk.corpus import stopwords
 from nltk import download
+from nltk.tokenize import word_tokenize
+import nltk
 import lexical_diversity as ld
 from gensim.models import Word2Vec, KeyedVectors
 from rouge_score import rouge_scorer
+# import fasttext
 # import evaluatorDependencies.factscorer as FS
-
 
 """
     The Abstract EvaluationHandler Class which takes the prompt, response, and returns the evaluation metric class
@@ -37,6 +39,14 @@ class EvaluationMethodFactory:
             return meteorEvaluator(data)
         elif dataType == "rouge":
             return rougeEvaluator(data)
+        elif dataType == "wer":
+            return werEvalutor(data)
+        elif dataType == "editDistance":
+            return editDistanceEvalutor(data)
+        elif dataType == "bert":
+            return bertEvaluator(data)
+        # elif dataType == "wordMover":
+        #     return wordMoverEvaluator(data)
         else:
             print("Only Testing the most basic evaluators currently not: " + str(dataType))
             # raise ValueError("Unsupported data type for evaluation")
@@ -51,11 +61,11 @@ def getEvaluators():
         # "perp",
         "bleu",
         "rouge",
-        "meteor"
+        "meteor",
         # "chrf",
-        # "wer",
-        # "editDistance",
-        # "bert",
+        "wer",
+        "editDistance",
+        "bert",
         # "wordMover",
         # "ttr",
         # "mtld",
@@ -65,7 +75,7 @@ def getEvaluators():
     ]
 
 """
-    Data will be in the formate: [List Of Strings, List of strings with proper grammer]
+    Data will be in the formate: [LLM Response, Data String]
 """
 class bleuEvaluator(Evaluator):
 
@@ -76,14 +86,9 @@ class bleuEvaluator(Evaluator):
         
         score = 0
 
-        for i in range(len(self.data[0])):
-            
-            score += sentence_bleu([self.data[0][i].strip().split()], self.data[1][i].strip().split())
+        score = sentence_bleu([self.data[0].strip().split()], self.data[1].strip().split())
 
-        score /= len(self.data[0])
-
-        return score
-
+        return ("bleu", score)
 
 """
     Note: we have to have an unmasked llm for this perfomance metric to do anything
@@ -144,7 +149,7 @@ class perpEvaluator(Evaluator):
             raise ValueError("Unsupported type of input for perplexity evaluation")
 
 """
-    Data will be in the format: [baseInformation, llmPrediction]
+    Data will be in the format: [llmResponse, DataString]
 """
 class rougeEvaluator(Evaluator):
 
@@ -154,11 +159,11 @@ class rougeEvaluator(Evaluator):
     
     def PerformEvaluation(self):
 
-        rouge_score = rouge_scorer.RougeScorer(['rouge2'], use_stemmer=True).load("rouge")
-        return rouge_score.score(predictions=self.data[1], references=self.data[0])
+        rouge_score = rouge_scorer.RougeScorer(['rouge1', 'rougeL'], use_stemmer=True)
+        return rouge_score.score(self.data[0], self.data[1])
 
 """
-    Data will be in the format: [Base truth string, LLM Output String]
+    Data will be in the format: [LLM Output, Data String]
 """
 class meteorEvaluator(Evaluator):
 
@@ -168,7 +173,10 @@ class meteorEvaluator(Evaluator):
     
     def PerformEvaluation(self):
 
-        return meteor_score(list([self.data[1]]), list([self.data[2]]))
+        nltk.download('punkt_tab')
+        nltk.download('wordnet')
+
+        return ("meteor", meteor_score([word_tokenize(self.data[0])], word_tokenize(self.data[1])))
 
 """
     Data will be in the format: [Base truth string, LLM Output string]
@@ -185,7 +193,7 @@ class chrFEvaluator(Evaluator):
         # return characterLevelScore.chrF(self.data[1], self.data[2])
 
 """
-    Data will be in the format: [Base truth string, LLM Output String]
+    Data will be in the format: [LLM Output String, Base truth string]
 """
 class werEvalutor(Evaluator):
 
@@ -206,10 +214,10 @@ class werEvalutor(Evaluator):
                 jiwer.ReduceToListOfListOfWords(),
             ])
         
-        return jiwer.wer(self.data[0], self.data[1], truth_transform=transforms, hypothesis_transform=transforms)
+        return ("wer", jiwer.wer(self.data[1], self.data[0], truth_transform=transforms, hypothesis_transform=transforms))
 
 """
-    Data will be in the following format [Truth String, LLM Output String]
+    Data will be in the following format [LLM Output String, Truth String]
 """
 class editDistanceEvalutor(Evaluator):
 
@@ -243,7 +251,7 @@ class editDistanceEvalutor(Evaluator):
                 else:
                     dp[i][j] = 1 + min(dp[i][j - 1], dp[i - 1][j], dp[i - 1][j - 1])
 
-        return dp[m][n]
+        return ("editDistance", dp[m][n])
     
 """
     Data will be in the format: [Base truth string, LLM Output string]
@@ -258,27 +266,30 @@ class bertEvaluator(Evaluator):
     def PerformEvaluation(self):
 
         P, R, F1 = BERTScorer(model_type='bert-base-uncased').score([self.data[1]], [self.data[0]])
-        return {"Precision": P.mean(), "Recall": R.mean(), "F1":F1.mean()}
+        return ("bert", {"Precision": P.mean().item(), "Recall": R.mean().item(), "F1":F1.mean().item()})
     
 """
-    Data will be in the format: [Base truth string, LLM Output string]
+    Data will be in the format: [LLM Output string, Base truth string,]
 """
 class wordMoverEvaluator(Evaluator):
 
     def __init__(self, data):
 
-        self.data = [data[0].lower.split(),data[1].lower.split()]
+        self.data = [data[0].lower().split(" "),data[1].lower().split(" ")]
     
     def PerformEvaluation(self):
 
-        download("stopwords")
+        nltk.download("stopwords")
         stop_words = stopwords.words("english")
-        cleanedBaseSentence = [w for w in self.data[0] if w not in stop_words]
-        cleanedHypothesisSentence = [w for w in self.data[1] if w not in stop_words]
+        cleanedBaseSentence = [w for w in self.data[1] if w not in stop_words]
+        cleanedHypothesisSentence = [w for w in self.data[0] if w not in stop_words]
         
+        fasttext.util.download_model('en', if_exists='ignore')
+        fasttext.load_model('cc.en.300.bin')
+
         model = KeyedVectors.load_word2vec_format('cc.en.100.bin', binary=True)
 
-        return model.wmdistance(cleanedBaseSentence, cleanedHypothesisSentence)
+        return ("wordMover", model.wmdistance(cleanedBaseSentence, cleanedHypothesisSentence))
     
 # """
 #     The fact scorer method is unique as it is brand new and uses a model trained on wikipedia for accuracy requires this model to be self contained

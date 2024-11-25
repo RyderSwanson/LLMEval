@@ -1,6 +1,6 @@
 import os
 import sys
-import EvaluationModules as evalModules
+from EvaluationModules import EvaluationMethodFactory, getEvaluators
 import multiprocessing
 from LLMEval import LLMEval
 
@@ -15,41 +15,54 @@ class evaluatorHandler():
 
     def handleEvaluations(self):
 
-        listOfEvaluators = []
+        listOfEvaluators = getEvaluators()
+        listOfEvaluationModules = []
         listOfResponses = []
 
-        for evaluator in evalModules.getEvaluators():
+        print(listOfEvaluators)
 
+        for evaluator in listOfEvaluators:
+
+            response = ""
+            self.prompt = None
             self.prompt = self.getLLMPrompt(evaluator)
 
             if(self.prompt != None):
 
                 if(self.isInBetaMode == True):
 
-                    listOfResponses.append(self.getEvalutorData(evaluator))
+                    response = self.getEvalutorResponse(evaluator)
 
                 else:
 
-                    print("Inside of caller")
-                    print("")
-                    listOfResponses.append(self.llm.getResponse(prompt=self.prompt))
-                    input()
+                    response = self.llm.getResponse(prompt=self.prompt)['choices'][0]['message']['content']
+
             else:
                 
                 raise Exception("Critical Failure: No Prompt Found For: " + str(evaluator))
 
-            if len(listOfResponses) != 0:
+            if len(response) != 0:
 
-                listOfEvaluators.append(evalModules.EvaluationMethodFactory.create_evaluation(evaluator, listOfResponses))
+                evaluationDataList = self.getEvalutorData(evaluator)
+                evaluationDataList.insert(0, response)
+                evaluationModule = EvaluationMethodFactory.create_evaluation(evaluator, evaluationDataList)
+                listOfEvaluationModules.append(evaluationModule)
 
             else: 
 
                 raise Exception("Critical Failure: No Response From LLM Found")
 
-        with multiprocessing.Pool(processes=len(listOfEvaluators)) as pool:
-            # Map the evaluate_instance function to each class instance
-            results = pool.map(self.callEvaluator, listOfEvaluators)
+        # with multiprocessing.Pool(processes=len(listOfEvaluationModules)) as pool:
+        #     # Map the evaluate_instance function to each class instance
+        #     results = pool.map(self.callEvaluator, listOfEvaluationModules)
+        #     print(results)
 
+        results = []
+
+        for process in listOfEvaluationModules:
+            results.append(process.PerformEvaluation())
+
+        print(results)
         print("Need to call backend")
         #callBackend(listOfEvaluators, results)
 
@@ -61,26 +74,13 @@ class evaluatorHandler():
         
         data = None
 
-        for file in os.path.dirname("evaluatorData/"):
+        for file in os.listdir("evaluatorData/"):
 
             if evaluatorName in file: 
 
-                with open(file, 'r') as f:
+                with open(os.path.join("evaluatorData", file), 'r') as f:
 
                     data = f.readlines()
-        
-        for file in os.path.dirname("evaluatorPrompt/"):
-
-            if evaluatorName in file: 
-
-                with open(file, 'r') as f:
-
-                    if data != None:
-
-                        data = (f.readline(),data)
-                    else:
-
-                        data = f.readline()
 
         return data
     
@@ -103,7 +103,21 @@ class evaluatorHandler():
 
                         if response == None:
 
-                            response = f.readlines()
+                            response = f.readlines()[0]
                             break
                 
         return response
+    
+    def getEvalutorResponse(self, evaluatorName):
+        
+        data = None
+
+        for file in os.listdir("evaluatorResponses/"):
+
+            if evaluatorName in file: 
+
+                with open(os.path.join("evaluatorResponses", file), 'r') as f:
+
+                    data = f.readlines()
+
+        return data[0]
