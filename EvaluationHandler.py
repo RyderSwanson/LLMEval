@@ -3,6 +3,8 @@ import sys
 from EvaluationModules import EvaluationMethodFactory, getEvaluators
 import multiprocessing
 from LLMEval import LLMEval
+import pandas as pd
+from datetime import date
 
 class evaluatorHandler():
 
@@ -62,8 +64,36 @@ class evaluatorHandler():
         for process in listOfEvaluationModules:
             results.append(process.PerformEvaluation())
 
-        print(results)
-        print("Need to call backend")
+        df = pd.DataFrame()
+        for result in results:
+
+            if isinstance(result, dict):
+                
+                keys = result.keys()
+                for key in keys:
+
+                    df[key] = [str(result[key])]
+                    print(key)
+                    print(str(result[key]))
+
+            else:
+
+                if isinstance(result[1], dict):
+
+                    df[result[0]] = [str(result[1])]
+                    print(result[0])
+                    print(str(result[1]))
+
+                else:
+
+                    df[result[0]] = [result[1]]
+                    print(result[0])
+                    print(result[1])
+
+        print(df.head())
+
+        df['CurrentDate'] = date.today()
+        df.to_csv("results.csv", index=False)
         #callBackend(listOfEvaluators, results)
 
     def callEvaluator(instance):

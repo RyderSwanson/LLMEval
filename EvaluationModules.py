@@ -6,9 +6,8 @@ from abc import ABC, abstractmethod
 from nltk.translate.bleu_score import sentence_bleu
 from nltk.translate.meteor_score import meteor_score
 import torch
-# import evaluatorDependencies.chrF as characterLevelScore
 import jiwer
-from transformers import BertTokenizer, BertModel
+# from transformers import BertTokenizer, BertModel
 from bert_score import BERTScorer
 from nltk.corpus import stopwords
 from nltk import download
@@ -17,8 +16,11 @@ import nltk
 import lexical_diversity as ld
 from gensim.models import Word2Vec, KeyedVectors
 from rouge_score import rouge_scorer
+
+# from evaluatorDependencies.FactcheckGPT.src.pipeline import check_document
 # import fasttext
-# import evaluatorDependencies.factscorer as FS
+# import factscore
+# import evaluatorDependencies.chrF as characterLevelScore
 
 """
     The Abstract EvaluationHandler Class which takes the prompt, response, and returns the evaluation metric class
@@ -45,6 +47,8 @@ class EvaluationMethodFactory:
             return editDistanceEvalutor(data)
         elif dataType == "bert":
             return bertEvaluator(data)
+        # elif dataType == "ttrEvaluator":
+        #     return ttrEvaluator(data)
         # elif dataType == "wordMover":
         #     return wordMoverEvaluator(data)
         else:
