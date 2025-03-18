@@ -14,6 +14,9 @@ bert-score = "*"
 lexical_diversity = "*"
 gensim = "*"
 rouge_score = "*"
+Detoxify = "*"
+spacy = "*"
+scikit-learn = "*"
 
 [build-system]
 requires = ["poetry-core"]
