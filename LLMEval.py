@@ -73,7 +73,12 @@ class LLMEval:
             })
         )
 
-        id = response.json()['id']
+        try:
+            id = response.json()['id']
+        except KeyError as e:
+            print(response.json())
+            raise e
+
         print(f"https://openrouter.ai/api/v1/generation?id={id}")
 
         # TODO: Currently we are just hoping the stats are avaliable in 1 second. We should wait until they are avaliable.
