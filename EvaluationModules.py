@@ -126,6 +126,12 @@ def conductEvaluation(promptDataFrameRow, llmResponse):
     elif promptDataFrameRow["type"] == "creativity":
 
         newEvaluations = pd.DataFrame([{"dat" : datEvaluator(llmResponse)}])
+    
+    elif promptDataFrameRow["type"] == "programming":
+        
+        newEvaluations = programmingEvaluators(promptDataFrameRow, llmResponse)
+
+        newEvaluations = pd.concat([newEvaluations, genericEvaluationOnText(promptDataFrameRow, llmResponse)], axis = 1)
 
     else:
 
@@ -208,6 +214,20 @@ def ethicalEvaluators(promptDataFrameRow, llmResponse):
         # print(holder[key])
         dfOne = pd.concat((dfOne, pd.concat([pd.DataFrame(d, index=[0]) for d in holder[key]], axis=1)), axis = 1)
     return dfOne
+
+def programmingEvaluators(promptDataFrameRow, llmResponse):
+
+    code = extractCode(llmResponse)
+    
+    programmingResults = {
+        "compilation" : compilationEvaluator(code),
+        "execution" : executionEvaluator(code),
+        "output" : outputEvaluator(code),
+        "error" : errorEvaluator(code),
+        "time" : timeEvaluator(code)
+    }
+
+    return pd.DataFrame([programmingResults])
 
 class EthicalEvaluator():
     """
@@ -1415,3 +1435,21 @@ def datEvaluator(llmResponse):
 #             "Input": "A list of strings representing the DAT response.",
 #             "Output": "A floating-point value representing the creativity score (average pairwise semantic distance)."
 #         }
+
+def extractCode(llmResponse):
+    return "tmp"
+
+def compilationEvaluator(code):
+    return "test"
+
+def executionEvaluator(code):
+    return "test"
+
+def outputEvaluator(code):
+    return "test"
+
+def errorEvaluator(code):
+    return "test"
+
+def timeEvaluator(code):
+    return "test"
