@@ -817,7 +817,11 @@ import spacy
 from collections import Counter
 
 # Load spaCy model for syntactic parsing
-nlp = spacy.load("en_core_web_sm")
+try:
+    nlp = spacy.load("en_core_web_sm")
+except:
+    spacy.cli.download("en_core_web_sm")
+    nlp = spacy.load("en_core_web_sm")
 
 """
     Data will be in the format: [List Of Strings]
@@ -1212,7 +1216,11 @@ def lsaEvaluator(llmResponse):
 
 def wordEmbeddingsNoveltyEvaluator(llmResponse):
 
-    nlp = spacy.load("en_core_web_md")
+    try:
+        nlp = spacy.load("en_core_web_md")
+    except:
+        spacy.cli.download("en_core_web_md")
+        nlp = spacy.load("en_core_web_md")
     # Load reference texts from the Gutenberg corpus.
     reference_texts = load_reference_texts()
     reference_doc = nlp(' '.join(reference_texts))
@@ -1373,7 +1381,11 @@ the list.
 def datEvaluator(llmResponse):
 
     # Load spaCy's medium English model.
-    nlp = spacy.load("en_core_web_md")
+    try:
+        nlp = spacy.load("en_core_web_md")
+    except:
+        spacy.cli.download("en_core_web_md")
+        nlp = spacy.load("en_core_web_md")
 
     # Obtain vectors for each word that has a valid embedding.
     vectors = []

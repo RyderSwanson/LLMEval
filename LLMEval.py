@@ -72,30 +72,13 @@ class LLMEval:
                 "max_tokens": max_tokens
             })
         )
-
-        if('\'error\'' in str(response.json())):
-
-            if(prompt == ""):
-
-                return ""
-            # if response.json()['error']['code'] == 400:
-            #     print("Your API key might have been throttled, pausing evaluation temporarily")
-            #     time.sleep(20)
-            #     response = self.getResponse(
-            #         prompt,
-            #         model,
-            #         temperature,
-            #         top_p,
-            #         top_k,
-            #         frequency_penalty,
-            #         presence_penalty,
-            #         repetition_penalty,
-            #         min_p,
-            #         top_a,
-            #         seed,
-            #         max_tokens)
-
-        id = response.json()['id']
+        
+        try:
+            id = response.json()['id']
+        except KeyError as e:
+            print(response.json())
+            raise e
+            
         print(f"https://openrouter.ai/api/v1/generation?id={id}")
 
         # TODO: Currently we are just hoping the stats are avaliable in 1 second. We should wait until they are avaliable.
