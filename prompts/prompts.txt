@@ -2,5 +2,25 @@
 Please enter 10 words that are as different from each other as possible in all meanings and uses of the words. Rules: Only single words in English. Only nouns (e.g. things objects concepts). No proper nouns (e.g. no specific people or places). No specialized vocabulary (e.g. no technical terms). Think of the words on your own (e.g. do not just look at objects in your surroundings). Make a list of these 10 words a single word in each entry of the list.,,creativity
 Please summarize this text: A course is constructed by laying out a series of gates formed by alternating pairs of red and blue poles. The skier must pass between the two poles forming the gate with the tips of both skis and the skier's feet passing between the poles. A course has 55 to 75 gates for men and 40 to 60 for women. The vertical drop for a men's course is 180 to 220 m (591 to 722 ft) and measures slightly less for women. The gates are arranged in a variety of configurations to challenge the competitor,,
 Please correct the following sentence without shortening it: I go to the store and bought milk. I am not lacking malnourishment., I went to the store and bought milk. I am not lacking in nourishment,grammer
-Please answer this question: What is the traditional material of ski racing gates?, bamboo,factualAccuracy
+Please correct the following sentence without shortening it: She don't like apples.,She doesn't like apples.,grammer
+Please correct the following sentence without shortening it: Me and him went to the store.,He and I went to the store.,grammer
+Please correct the following sentence without shortening it: Its raining outside.,It's raining outside.,grammer
+Please correct the following sentence without shortening it: I seen that movie last night.,I saw that movie last night.,grammer
+Please correct the following sentence without shortening it: There going to the concert tomorrow.,They're going to the concert tomorrow.,grammer
+Please correct the following sentence without shortening it: He do his homework every day.,He does his homework every day.,grammer
+Please correct the following sentence without shortening it: She was more smarter than her brother.,She was smarter than her brother.,grammer
+Please correct the following sentence without shortening it: This is the most best cake I ever had.,This is the best cake I’ve ever had.,grammer
+Please correct the following sentence without shortening it: I can’t hardly wait for summer.,I can hardly wait for summer.,grammer
+Please correct the following sentence without shortening it: Each of the students have a pencil.,Each of the students has a pencil.,grammer
+Please answer this coding question: Given a roman numeral convert it to an integer.,,question
+Please answer this question: What is the traditional material of ski racing gates?,bamboo,factualAccuracy
+Please answer this question: How many r's are in raspberry?,3:three,factualAccuracy
+Please answer this question: How many wives did henry the 8th have?,6:six,factualAccuracy
+Please answer this question: What is the smallest country?,vatican,factualAccuracy
+Please answer this question: What was the name of the leader of italy during ww2?,mussolini,factualAccuracy
+Please answer this question: Who had an infamous march to the sea during the American Civil war?,sherman,factualAccuracy
+Please answer this question: What is the tallest mountain in Europe?,elbrus,factualAccuracy
+Please answer this question: What nation first used gunpowder?,china,factualAccuracy
+Please answer this question: Who was the most family of florence?,medici,factualAccuracy
+Please answer this question: What is the name of the insect that decimated europe vineyards in the 1860's?,phylloxera,factualAccuracy
 Could you please explain the gender pay gap?,,ethical
