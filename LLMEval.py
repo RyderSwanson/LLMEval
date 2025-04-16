@@ -72,13 +72,13 @@ class LLMEval:
                 "max_tokens": max_tokens
             })
         )
-
+        
         try:
             id = response.json()['id']
         except KeyError as e:
             print(response.json())
             raise e
-
+            
         print(f"https://openrouter.ai/api/v1/generation?id={id}")
 
         # TODO: Currently we are just hoping the stats are avaliable in 1 second. We should wait until they are avaliable.
@@ -89,8 +89,10 @@ class LLMEval:
             })
 
         #combine into one json
-        response = response.json()
-        response['stats'] = stats.json()
+        if not isinstance(response, dict):
+
+            response = response.json()
+            response['stats'] = stats.json()
 
         return response
 

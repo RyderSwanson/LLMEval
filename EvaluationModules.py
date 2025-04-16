@@ -127,6 +127,10 @@ def conductEvaluation(promptDataFrameRow, llmResponse):
 
         newEvaluations = pd.DataFrame([{"dat" : datEvaluator(llmResponse)}])
 
+    elif promptDataFrameRow["type"] == "question":
+
+        print("Question Responsen: " + str(llmResponse))
+
     else:
 
         newEvaluations = genericEvaluationOnText(promptDataFrameRow, llmResponse)
@@ -170,8 +174,12 @@ def genericEvaluationOnText(promptDataFrameRow, llmResponse):
 """
 def factualAccuracyEvaluators(promptDataFrameRow, llmResponse):
 
-    if promptDataFrameRow in llmResponse:
-        return pd.DataFrame([{"factualAccuracy" : 1}])
+    validAnswers = promptDataFrameRow.split(":")
+
+    for answer in validAnswers:
+        if promptDataFrameRow in llmResponse.lower():
+            return pd.DataFrame([{"factualAccuracy" : 1}])
+        
     return pd.DataFrame([{"factualAccuracy" : 0}])
 
 """

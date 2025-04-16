@@ -9,10 +9,11 @@ import numpy as np
 
 class evaluatorHandler():
 
-    def __init__(self, key):
+    def __init__(self, key, model):
 
         self.apiKey = key
         self.llm = LLMEval(api_key=key)
+        self.model = model
         #This section will be used to add required dependencies to the current location, although it has not yet been made
         self.isInBetaMode = False
 
@@ -24,12 +25,13 @@ class evaluatorHandler():
         for index, row in self.getPrompts().iterrows():
 
             print("Working on prompt: " + str(index))
-            fullResponse = self.llm.getResponse(prompt=row["prompt"])
-            response = fullResponse['choices'][0]['message']['content']
-            modelName = fullResponse['model']
-            # print("Type: " + row["type"])
+            fullResponse = self.llm.getResponse(prompt=row["prompt"], model = self.model)
+            if not (fullResponse == ""):
+                response = fullResponse['choices'][0]['message']['content']
+                modelName = fullResponse['model']
+                # print("Type: " + row["type"])
 
-            nonAggregateResults = pd.concat([nonAggregateResults, conductEvaluation(row, response)], ignore_index=True)
+                nonAggregateResults = pd.concat([nonAggregateResults, conductEvaluation(row, response)], ignore_index=True)
 
         # print(nonAggregateResults)
         results = self.aggregateData(nonAggregateResults)
